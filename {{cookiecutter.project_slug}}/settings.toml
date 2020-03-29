@@ -1,0 +1,8 @@
+[development]
+sqlalchemy_database_uri = "postgresql+psycopg2://{{cookiecutter.project_slug}}_user:IWKdrWWnc6XA39pgX6PU@localhost:5432/{{cookiecutter.project_slug}}_db"
+
+[testing]
+sqlalchemy_database_uri = "postgresql+psycopg2://{{cookiecutter.project_slug}}_user:IWKdrWWnc6XA39pgX6PU@localhost:5432/{{cookiecutter.project_slug}}_db_test"
+
+[docker]
+sqlalchemy_database_uri = "postgresql+psycopg2://{{cookiecutter.project_slug}}_user:IWKdrWWnc6XA39pgX6PU@db:5432/{{cookiecutter.project_slug}}_db"
