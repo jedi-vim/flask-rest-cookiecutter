@@ -2,7 +2,7 @@
 name = "{{ cookiecutter.project_slug }}"
 version = "0.0.1"
 description = "{{ cookiecutter.project_description }}"
-authors = ["Leonam Silva <leohenryster@gmail.com>"]
+authors = ["{{ cookiecutter.project_owner }} <{{ cookiecutter.project_owner_email }}>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
