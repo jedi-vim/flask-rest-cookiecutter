@@ -1,0 +1,7 @@
+{
+	"project_slug": "foo",
+	"project_name": "Foo Project",
+	"project_description": "Foo Example",
+	"project_owner": "Owner Foo",
+	"project_owner_email": "owner@foo.com"
+}

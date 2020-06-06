@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  {{cookiecutter.project_slug}}-api:
+    build:
+      args:
+        ENV_FOR_DYNACONF: docker
+      context: .
+    environment:
+      ENV_FOR_DYNACONF: docker
+    image: {{cookiecutter.project_slug}}/api
+    container_name: {{cookiecutter.project_slug}}-api
+    command: sh -c './wait-for-pg.sh -t 30 db:5432 -- ./docker_start.sh'
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+    networks:
+      - postgres_network
+
+  postgres:
+    image: postgres:11.3-alpine
+    container_name: {{cookiecutter.project_slug}}-db
+    restart: always
+    environment:
+      - POSTGRES_DB={{cookiecutter.project_slug}}_db
+      - POSTGRES_USER={{cookiecutter.project_slug}}_user
+      - POSTGRES_PASSWORD=IWKdrWWnc6XA39pgX6PU
+    volumes:
+        - postgres_{{cookiecutter.project_slug}}:/var/lib/postgresql/data
+    networks:
+      postgres_network:
+         aliases:
+            - db
+
+volumes:
+  postgres_api_{{cookiecutter.project_slug}}:
+    driver: local
+    name: postgres_api_{{cookiecutter.project_slug}}
+
+networks:
+  postgres_network:
+    driver: bridge
+
