@@ -3,33 +3,39 @@ clean:
 	rm -rf *.egg.info
 	find . -type f -name *.pyc -exec rm -f {} \;
 
-build:
+docker-build:
 	docker-compose stop
 	docker-compose rm
-	docker-compose build
+	docker-compose build 
 
-run:
-	docker-compose up
+docker-run:
+	docker-compose up {{ project_slug }}-api docker_db
 
-install: clean
-	poetry install
+dev-install: clean
+	poetry install --dev
+
+dev-run:
+	FLASK_APP={{ project_slug }}/app.py flask run
+	
+dev_db-up:
+	docker-compose up -d development_db
+
+dev_db-stop:
+	docker-compose stop development_db
+
+dev_db-initialize:
+	python -m {{ project_slug }}.initialize_db
+
+test_db-up:
+	docker-compose up -d test_db
+
+test_db-stop:
+	docker-compose stop test_db
 
 lint: clean
-	flake8 {{ cookiecutter.project_slug }}
+	flake8 {{ project_slug }}
+	pylint {{ project_slug }}
+	isort {{ project_slug }} --check
 
 test: lint
-	export ENV_FOR_DYNACONF=testing; 
-	pytest -v --cov-fail-under=90 --cov={{ cookiecutter.project_slug }} {{ cookiecutter.project_slug }}/tests 
-
-test-report:
-	export ENV_FOR_DYNACONF=testing; 
-	pytest -v --cov-fail-under=90 --cov={{ cookiecutter.project_slug }} --cov-report=html {{ cookiecutter.project_slug }}/tests
-
-db-init:
-	poetry run initialize_db
-
-db-migrate:
-	flask db migrate -m "$(message)"
-
-db-upgrade:
-	flask db upgrade
+	ENV_FOR_DYNACONF=testing pytest
