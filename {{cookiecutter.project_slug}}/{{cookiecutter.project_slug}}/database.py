@@ -1,5 +1,4 @@
 from flask import current_app
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
 
@@ -15,7 +14,6 @@ class ORMClass(Model):
 
 
 db = SQLAlchemy(model_class=ORMClass)
-migrate = Migrate()
 
 
 def truncate_tables(*args, **kwargs):

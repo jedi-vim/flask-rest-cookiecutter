@@ -1,8 +1,8 @@
 from dynaconf import FlaskDynaconf, settings
 from flask import Flask
 
-from {{cookiecutter.project_slug}} import views
-from {{cookiecutter.project_slug}}.database import db, migrate
+from {{cookiecutter.project_slug}} import auth, views
+from {{cookiecutter.project_slug}}.database import db
 
 
 def create_app():
@@ -13,6 +13,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.get('sqlalchemy_track_modifications', False)
 
     db.init_app(app)
-    migrate.init_app(app, db)
     views.init_app(app)
+    auth.init_app(app)
     return app

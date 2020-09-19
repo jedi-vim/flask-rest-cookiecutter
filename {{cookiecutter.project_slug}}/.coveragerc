@@ -1,2 +1,0 @@
-[report]
-omit = {{cookiecutter.project_slug}}/tests/*
