@@ -3,10 +3,9 @@ version: "3.7"
 services:
   {{cookiecutter.project_slug}}-api:
     build:
-      args:
-        ENV_FOR_DYNACONF: docker
       context: .
     environment:
+      CREATE_DATABASE: ${CREATE_DATABASE-true}
       ENV_FOR_DYNACONF: docker
     image: {{cookiecutter.project_slug}}/api
     container_name: {{cookiecutter.project_slug}}-api
@@ -14,31 +13,64 @@ services:
     ports:
       - '4000:4000'
     depends_on:
-      - postgres
+      - docker_db
     networks:
       - postgres_network
 
-  postgres:
+  docker_db:
     image: postgres:11.3-alpine
-    container_name: {{cookiecutter.project_slug}}-db
+    container_name: {{cookiecutter.project_slug}}-docker_db
     restart: always
     environment:
       - POSTGRES_DB={{cookiecutter.project_slug}}_db
       - POSTGRES_USER={{cookiecutter.project_slug}}_user
       - POSTGRES_PASSWORD=IWKdrWWnc6XA39pgX6PU
     volumes:
-        - postgres_{{cookiecutter.project_slug}}:/var/lib/postgresql/data
+        - postgres_{{cookiecutter.project_slug}}_docker:/var/lib/postgresql/data
     networks:
       postgres_network:
          aliases:
             - db
+  
+  development_db:
+    container_name: {{cookiecutter.project_slug}}-development_db
+    image: postgres:11.3-alpine
+    environment:
+      - POSTGRES_DB={{cookiecutter.project_slug}}_db
+      - POSTGRES_USER={{cookiecutter.project_slug}}_user
+      - POSTGRES_PASSWORD=IWKdrWWnc6XA39pgX6PU
+    volumes:
+        - postgres_{{cookiecutter.project_slug}}_dev:/var/lib/postgresql/data
+    ports:
+      - "5453:5432" 
+
+  test_db:
+    container_name: {{cookiecutter.project_slug}}-test_db
+    image: postgres:11.3-alpine
+    environment:
+      - POSTGRES_DB={{cookiecutter.project_slug}}_db
+      - POSTGRES_USER={{cookiecutter.project_slug}}_user
+      - POSTGRES_PASSWORD=IWKdrWWnc6XA39pgX6PU
+    volumes:
+        - postgres_{{cookiecutter.project_slug}}_test:/var/lib/postgresql/data
+    ports:
+      - "5454:5432"
+
 
 volumes:
-  postgres_api_{{cookiecutter.project_slug}}:
+  postgres_{{cookiecutter.project_slug}}_docker:
     driver: local
-    name: postgres_api_{{cookiecutter.project_slug}}
+    name: postgres_{{cookiecutter.project_slug}}_docker
+
+  postgres_{{cookiecutter.project_slug}}_test:
+    driver: local
+    name: postgres_{{cookiecutter.project_slug}}_test
+
+  postgres_{{cookiecutter.project_slug}}_dev:
+    driver: local
+    name: postgres_{{cookiecutter.project_slug}}_dev
+          
 
 networks:
   postgres_network:
     driver: bridge
-
